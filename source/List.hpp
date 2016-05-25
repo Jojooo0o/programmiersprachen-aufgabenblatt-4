@@ -48,11 +48,56 @@ public :
 	List<T> (): m_size(0), m_first(nullptr), m_last(nullptr) {} 
 
 	bool empty() const{
-		return m_first == m_last;
+		return m_first == nullptr && m_last == nullptr;
 	}
 
 	std::size_t size() const{
 		return m_size;
+	}
+
+//A2
+	void push_front(const T& value){
+		++m_size;
+		if(empty()){
+			m_first = new ListNode <T>(value, nullptr, nullptr);
+			m_last = m_first;
+		}else{
+			m_first->m_prev = new ListNode <T>(value, nullptr, m_first);
+			m_first = m_first->m_prev;
+		}
+	}
+
+
+	void push_back(const T& value){
+		++m_size;
+		if(empty()){
+			m_first = new ListNode <T>(value, nullptr, nullptr);
+			m_last = m_first;
+		}else{
+			m_last->m_next = new ListNode <T>(value, m_last, nullptr);
+			m_last = m_last->m_next;
+		}
+	}
+	void pop_front(){
+		--m_size;
+		if(!empty()){
+			m_first = m_first->m_next;
+			delete m_first->m_prev;
+			}
+		}
+	void pop_back(){
+		--m_size;
+		if(!empty()){
+			m_last = m_last->m_prev;
+			delete m_last->m_next;
+			}
+		}
+
+	T& front() const {
+		return m_first->m_value;
+	}
+	T& back() const{
+		return m_last->m_value;
 	}
 
 //typedef
