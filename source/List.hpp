@@ -67,7 +67,6 @@ public :
 		}
 	}
 
-
 	void push_back(const T& value){
 		++m_size;
 		if(empty()){
@@ -79,17 +78,27 @@ public :
 		}
 	}
 	void pop_front(){
-		--m_size;
-		if(!empty()){
+		if(size() == 1){
+			delete m_first;
+			m_first = nullptr;
+			m_last = nullptr;
+			--m_size;
+		} else if(!empty()){
 			m_first = m_first->m_next;
 			delete m_first->m_prev;
+			--m_size;
 			}
 		}
 	void pop_back(){
-		--m_size;
-		if(!empty()){
+		if(size() == 1){
+			delete m_first;
+			m_first = nullptr;
+			m_last = nullptr;
+			--m_size;
+		} else if(!empty()){
 			m_last = m_last->m_prev;
 			delete m_last->m_next;
+			--m_size;
 			}
 		}
 
@@ -98,6 +107,17 @@ public :
 	}
 	T& back() const{
 		return m_last->m_value;
+	}
+
+//A3
+	void clear(){
+		while(!empty()){
+			pop_front();
+		}
+	}
+	//Destruktor
+	~List () {
+		clear();
 	}
 
 //typedef
