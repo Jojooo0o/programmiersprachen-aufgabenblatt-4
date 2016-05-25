@@ -3,6 +3,7 @@
 
 #include <cstddef>
 
+
 // List.hpp
 template < typename T >
 	struct List ;
@@ -20,16 +21,6 @@ template < typename T >
 };
 
 template < typename T >
-	struct ListIterator
-
-{
-	friend class List <T >;
-// not implemented yet
-private :
-	ListNode <T>* m_node = nullptr ;
-};
-
-template < typename T >
 	struct ListConstIterator
 {
 	friend class List <T >;
@@ -37,6 +28,55 @@ public :
 // not implemented yet
 private :
 	ListNode <T>* m_node = nullptr ;
+};
+//A4
+template <typename T>
+struct ListIterator
+{
+	typedef ListIterator<T>Self;
+
+	typedef T value_type;
+	typedef T* pointer;
+	typedef T& reference;
+	typedef ptrdiff_t difference_type;
+	typedef std::forward_iterator_tag iterator_category;
+
+	friend class List<T>;
+
+	ListIterator() : m_node(nullptr){}
+	ListIterator(ListNode<T>* n) : m_node(n){}
+	reference operator*() const {
+		return *m_node->m_value;
+	}
+	pointer operator->() const {
+		return *m_node;
+	}
+	Self& operator++() {
+		m_node=m_node->m_next;
+		return m_node;
+	}
+	Self operator++(int counter) {
+		while(counter>0){
+			m_node = m_node -> m_next;
+			counter--;
+		}
+		return m_node;
+	}
+	bool operator==(const Self& x) const {
+		return (m_node == x.m_node);
+	}
+	bool operator!=(const Self& x) const {
+		return (m_node != x.m_node);
+	}
+	Self next() const
+	{
+		if (m_node)
+			return ListIterator(m_node->m_next);
+		else
+			return ListIterator(nullptr);
+	}
+private:
+	ListNode<T>* m_node = nullptr;
 };
 
 template < typename T >
@@ -126,7 +166,7 @@ public :
 	typedef const T * const_pointer ;
 	typedef T & reference ;
 	typedef const T & const_reference ;
-	typedef ListIterator <T > iterator ;
+	typedef ListIterator <T> iterator ;
 	typedef ListConstIterator <T > const_iterator ;
 	friend class ListIterator <T >;
 	friend class ListConstIterator <T >;// not implemented yet
@@ -135,6 +175,5 @@ private :
 	ListNode <T >* m_first = nullptr ;
 	ListNode <T >* m_last = nullptr ;
 };
-
 
 #endif
