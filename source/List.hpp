@@ -46,21 +46,25 @@ struct ListIterator
 	ListIterator() : m_node(nullptr){}
 	ListIterator(ListNode<T>* n) : m_node(n){}
 	reference operator*() const {
-		return *m_node->m_value;
+		return m_node->m_value;
 	}
 	pointer operator->() const {
 		return *m_node;
 	}
-	Self& operator++() {
-		m_node=m_node->m_next;
-		return m_node;
-	}
-	Self operator++(int counter) {
-		while(counter>0){
-			m_node = m_node -> m_next;
+	ListNode<T>* get_node () const {return m_node;} //get m_node
+
+
+	Self& operator ++() {
+		*this = next(); //setze iterator auf naechstes element
+		return *this;
+		}
+
+	Self& operator++(int counter) {
+		while(counter != 0){
+			*this = next();
 			counter--;
 		}
-		return m_node;
+		return *this;
 	}
 	bool operator==(const Self& x) const {
 		return (m_node == x.m_node);
@@ -83,6 +87,17 @@ template < typename T >
 class List
 {
 public :
+
+//typedef
+	typedef T value_type ;
+	typedef T * pointer ;
+	typedef const T * const_pointer ;
+	typedef T & reference ;
+	typedef const T & const_reference ;
+	typedef ListIterator <T> iterator ;
+	typedef ListConstIterator <T > const_iterator ;
+	friend class ListIterator <T >;
+	friend class ListConstIterator <T >;// not implemented yet
 
 //A1
 	List<T> (): m_size(0), m_first(nullptr), m_last(nullptr) {} 
@@ -142,10 +157,17 @@ public :
 			}
 		}
 
-	T& front() const {
+	T const& front() const {
 		return m_first->m_value;
 	}
-	T& back() const{
+	T const& back() const{
+		return m_last->m_value;
+	}
+
+	T& front(){
+		return m_first->m_value;
+	}
+	T& back(){
 		return m_last->m_value;
 	}
 
@@ -160,20 +182,88 @@ public :
 		clear();
 	}
 
-//typedef
-	typedef T value_type ;
-	typedef T * pointer ;
-	typedef const T * const_pointer ;
-	typedef T & reference ;
-	typedef const T & const_reference ;
-	typedef ListIterator <T> iterator ;
-	typedef ListConstIterator <T > const_iterator ;
-	friend class ListIterator <T >;
-	friend class ListConstIterator <T >;// not implemented yet
+//A5
+	iterator begin() const{ //Begin von der List
+		return ListIterator<T>(m_first);
+	}
+
+	iterator end() const{ //Versuch 1
+		return ListIterator<T> ();
+	}
+
+//A7
+	List<T> (List<T> const& list): m_size(0), m_first(nullptr), m_last(nullptr) {
+		for(iterator it = list.begin(); it != list.end(); ++it){
+			push_back(*it);
+		}
+	}
+
+//A8
+	void insert(iterator const& it, T const& value){
+		ListNode<T>* node = new ListNode<T>(value, nullptr, nullptr);
+		ListNode<T>* prev = it.get_node()->m_prev;
+		ListNode<T>* next = it.get_node();
+		node->m_prev = prev;
+		prev->m_next = node;
+		node->m_next = next;
+		next->m_prev = node;
+	}
+
+//A9
+	void reverse() {
+		auto help2 = m_first;
+		m_first = m_last;
+		m_last = help2;
+		for(auto it = begin(); it != end(); ++it){
+			auto node = it.get_node();
+			auto help = node->m_prev;
+			node->m_prev = node->m_next;
+			node->m_next = help;
+		}
+		
+	}
+
+
 private :
 	std :: size_t m_size = 0;
 	ListNode <T >* m_first = nullptr ;
 	ListNode <T >* m_last = nullptr ;
 };
+
+//A6
+	template<typename T>
+	bool operator== (List<T> const& xs, List<T> const& ys){
+	ListIterator<T> yit = ys.begin(); //VIterator zum durchgehen beider Listen
+	bool same = true;
+	for(ListIterator<T> xit = xs.begin(); xit != xs.end(); ++xit){//Listendurchgang für liste xs
+		if(*xit != *yit){//Vergleich der Listen
+			same = false;
+		}
+		++yit;
+	}
+	return same;
+	};
+
+	template<typename T>
+	bool operator!= (List<T> const& xs, List<T> const& ys){
+	ListIterator<T> yit = ys.begin(); //VIterator zum durchgehen beider Listen
+	bool same = false;
+	for(ListIterator<T> xit = xs.begin(); xit != xs.end(); ++xit){//Listendurchgang für liste xs
+		if(*xit != *yit){//Vergleich der Listen
+			same = true;
+		}
+		++yit;
+	}
+	return same;
+	};
+
+	template<typename T>
+	List<T> reverse(List<T> const& list){
+		List<T> list2;
+		for(auto it = list.begin(); it != list.end(); ++it){
+			list2.push_front(*it);
+		}
+		return list2;
+	}
 
 #endif

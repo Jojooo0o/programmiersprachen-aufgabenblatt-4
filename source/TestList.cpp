@@ -50,6 +50,62 @@
 		REQUIRE(list.empty());
 	}
 
+//A5
+	TEST_CASE("should be an empty range after default construction", "[iterators]"){
+		List<int> list;
+		auto b = list.begin();
+		auto e = list.end();
+
+		REQUIRE(b == e);
+	}
+
+	TEST_CASE("provide access to the first element with begin", "[iterators]"){
+		List<int> list;
+		list.push_front(42);
+		REQUIRE(*list.begin() == 42);
+	}
+//A7
+	TEST_CASE("copy constructor", "[constructor]"){
+		List<int> list;
+		list.push_front(1);
+		list.push_front(2);
+		list.push_front(3);
+		list.push_front(4);
+		List<int> list2{list};
+		REQUIRE(list == list2);
+	}
+//A8
+	TEST_CASE("insert", "[insert]"){
+		List<int> list;
+		list.push_front(1);
+		list.push_front(2);
+		list.push_front(3);
+		list.push_front(4);
+
+		auto it = list.begin();
+		++it;
+		list.insert(it, 5);
+
+		for(auto iterator = list.begin(); iterator != list.end(); ++iterator){
+			std::cout << *iterator << std::endl;
+		}
+	}
+//A9
+	TEST_CASE("reverse", "[reverse]"){
+		List<int> list;
+		list.push_front(1);
+		list.push_front(2);
+		list.push_front(3);
+		list.push_front(4);
+
+		List<int> list2 {list};
+		list2.reverse();
+
+		//auto list2 = reverse(list);
+		auto list3 = reverse(list2);
+
+		REQUIRE(list == list3);
+	}
 
 int main(int argc, char *argv[])
 {
