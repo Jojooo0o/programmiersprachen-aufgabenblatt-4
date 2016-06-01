@@ -106,6 +106,20 @@
 
 		REQUIRE(list == list3);
 	}
+//A12
+	TEST_CASE("move constructor", "[constructor]"){
+		List<int> list;
+		list.push_front(1);
+		list.push_front(1);
+		list.push_front(1);
+		list.push_front(1);
+
+		List<int> list2(std::move(list));
+		
+		REQUIRE(0 == list.size());
+		REQUIRE(list.empty());
+		REQUIRE(4 == list2.size());
+	}
 
 int main(int argc, char *argv[])
 {

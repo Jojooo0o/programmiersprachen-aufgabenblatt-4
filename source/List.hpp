@@ -223,6 +223,19 @@ public :
 		
 	}
 
+//A12
+	List<T> (List<T>&& rhs) : m_size(rhs.m_size), m_first(rhs.m_first), m_last(rhs.m_last){
+		rhs.m_size = 0;
+		rhs.m_first = nullptr;
+		rhs.m_last = nullptr;
+	}
+
+	List<T>& operator = (List<T>&& list){
+		std::swap(m_size, list.m_size);
+		std::swap(m_first, list.m_first);
+		std::swap(m_last, list.m_last);
+	}
+
 
 private :
 	std :: size_t m_size = 0;
