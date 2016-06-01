@@ -1,6 +1,8 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
 #include "List.hpp"
+#include <vector>
+#include <algorithm>
 
 //A1
 	TEST_CASE("describe_list", "[list_a1]"){
@@ -106,6 +108,20 @@
 
 		REQUIRE(list == list3);
 	}
+
+//A10
+/*	TEST_CASE("copy list to vector", "[copy vector]"){
+		List<int> list;
+		list.push_front(1);
+		list.push_front(2);
+		list.push_front(3);
+		list.push_front(4);
+
+		std::vector<int> v1;
+
+		std::copy(list.begin(), list.end(), v1.begin());
+	}
+*/
 //A12
 	TEST_CASE("move constructor", "[constructor]"){
 		List<int> list;
@@ -115,7 +131,7 @@
 		list.push_front(1);
 
 		List<int> list2(std::move(list));
-		
+
 		REQUIRE(0 == list.size());
 		REQUIRE(list.empty());
 		REQUIRE(4 == list2.size());
